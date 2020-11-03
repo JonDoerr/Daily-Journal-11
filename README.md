@@ -1,1 +1,2 @@
-# Daily-Journal-11
+Group Members:
+Jonathan Doerr Group 11 Daily Journal
