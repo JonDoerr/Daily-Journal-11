@@ -2,6 +2,7 @@ package com.example.dailyjournal11
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,7 @@ import androidx.fragment.app.DialogFragment
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.login_layout)
 
         var registerButtonView = findViewById<Button>(R.id.registerButton)
         registerButtonView.setOnClickListener {
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         var loginButtonView = findViewById<Button>(R.id.loginButton)
         loginButtonView.setOnClickListener {
             Toast.makeText(applicationContext, "clicked login", Toast.LENGTH_SHORT).show() //TODO remove this
+            val intent = Intent(this@MainActivity, Journals::class.java)
+            startActivity(intent)
         }
     }
 

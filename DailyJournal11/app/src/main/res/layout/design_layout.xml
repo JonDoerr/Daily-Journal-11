@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/picture_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="56dp"
+        android:text="@string/add_pictures"
+        app:layout_constraintStart_toEndOf="@+id/submitButton"
+        app:layout_constraintTop_toBottomOf="@+id/body_text" />
+
+    <EditText
+        android:id="@+id/body_text"
+        android:layout_width="366dp"
+        android:layout_height="242dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="52dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/hint_in_design"
+        android:inputType="textMultiLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/audio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/add_audio"
+        app:layout_constraintEnd_toStartOf="@+id/submitButton"
+        app:layout_constraintTop_toBottomOf="@+id/body_text" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="160dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/Submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picture_button" />
+
+    <Button
+        android:id="@+id/BackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="@string/Back"
+        app:layout_constraintBottom_toTopOf="@+id/body_text"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

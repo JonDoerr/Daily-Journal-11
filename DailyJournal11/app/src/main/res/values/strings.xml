@@ -2,5 +2,11 @@
     <string name="app_name">DailyJournal11</string>
     <string name="menu_content">Jonathan Probert\nJoshua Wentling\nJonathan Doerr</string>
     <string name="menu_name">Authors:</string>
+    <string name="newJournal">New Journal</string>
+    <string name="hint_in_design">Enter your text here...</string>
+    <string name="add_audio">Add Audio</string>
+    <string name="add_pictures">Add Pictures</string>
+    <string name="Submit">Submit</string>
+    <string name="Back">Back</string>
 
 </resources>
