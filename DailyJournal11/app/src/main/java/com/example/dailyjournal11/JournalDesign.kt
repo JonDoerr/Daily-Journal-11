@@ -32,8 +32,6 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private lateinit var mBackButton: Button
     private lateinit var mEditText: EditText
 
-    private lateinit var mPlayAudioButton: Button
-    private lateinit var mRecordAudioButton: Button
     private lateinit var mAudioFilename: String
     private var mRecorder: MediaRecorder? = null
     private var mPlayer: MediaPlayer? = null
@@ -64,7 +62,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
 
 //      audio section start in oncreate()
-        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile" //TODO this needs to be transfered to a database format instead of external files
+        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp" //TODO this needs to be transfered to a database format instead of external files
         mRecord = findViewById(R.id.record_audio_button)
         mPlay = findViewById(R.id.play_audio_button)
 
@@ -77,12 +75,14 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mRecord.setOnCheckedChangeListener {_, isChecked ->
             mPlay.isEnabled = !isChecked
 
+            Toast.makeText(applicationContext, "start/stop recording", Toast.LENGTH_SHORT).show()
             onRecordPressed(isChecked)
         }
 
         mPlay.setOnCheckedChangeListener {_, isChecked ->
             mRecord.isEnabled = !isChecked
 
+            Toast.makeText(applicationContext, "start/stop playing", Toast.LENGTH_SHORT).show()
             onPlayPressed(isChecked)
         }
 
@@ -306,8 +306,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
 
     private fun continueApp(){
-        mPlayAudioButton.isEnabled = true
-        mRecordAudioButton.isEnabled = true
+        mPlay.isEnabled = true
+        mRecord.isEnabled = true
     }
 //    audio section methods end
 }
