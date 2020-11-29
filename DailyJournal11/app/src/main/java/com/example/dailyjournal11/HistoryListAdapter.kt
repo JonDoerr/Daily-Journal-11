@@ -1,3 +1,7 @@
+/**
+ * This file is from Lab 5 Lifecycle Aware
+ */
+
 package com.example.dailyjournal11
 import java.util.ArrayList
 

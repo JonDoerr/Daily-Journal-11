@@ -1,6 +1,7 @@
 package com.example.dailyjournal11
 
 import android.Manifest
+import android.R.attr
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,21 +11,19 @@ import android.media.AudioManager.OnAudioFocusChangeListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
-import android.widget.ToggleButton
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.*
+import androidx.core.view.marginBottom
 import java.io.File
 import java.io.IOException
+
 
 class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
     companion object {
         private const val TAG = "journalDesign"
         private const val APP_PERMS_REQ = 123
+        private const val SELECT_IMAGE = 9137
     }
 
     private lateinit var mPictureButton: Button
@@ -48,6 +47,9 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private val mFocusLock = Any()
     private var mPlaybackDelayed: Boolean = false
     private var mResumeOnFocusGain: Boolean = false
+
+    private lateinit var mScrollView: LinearLayout
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,8 +102,17 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             .setOnAudioFocusChangeListener(this, Handler(Looper.getMainLooper()))
             .build()
 
+        //Init image resources
+
+        mScrollView = findViewById(R.id.LinearScrollView)
+
+
         mPictureButton.setOnClickListener {
             Toast.makeText(applicationContext, "picture Button clicked", Toast.LENGTH_SHORT).show() //TODO remove this
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE)
         }
 //        audio section end in oncreate()
 
@@ -310,4 +321,25 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mRecord.isEnabled = true
     }
 //    audio section methods end
+
+    //Picture section
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
+        if (requestCode == SELECT_IMAGE && resultCode != 0) {
+            val inputStream = applicationContext.contentResolver.openInputStream(data!!.data!!)
+
+            var imageToAdd = ImageView(applicationContext)
+            imageToAdd.setImageURI(data!!.data!!)
+            imageToAdd.maxWidth = 400
+            imageToAdd.maxHeight = 400
+            imageToAdd.adjustViewBounds = true
+            imageToAdd.setPadding(10, 0, 10, 0)
+            //ximageToAdd.layout
+            //mScrollView.dividerPadding = 0
+            var oof = mScrollView.layoutParams
+            mScrollView.addView(imageToAdd)
+        }
+        else {
+            Toast.makeText(applicationContext, "get image cancelled", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
