@@ -7,72 +7,39 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.Switch
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
 class JournalOptions : AppCompatActivity() {
 
     private lateinit var mContext: Context
-    private lateinit var notificationSwitch: Switch
+    private lateinit var notificationText: TextView
+    private lateinit var offButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.options_layout)
-        notificationSwitch = findViewById<Switch>(R.id.notification_switch)
+        notificationText = findViewById<Switch>(R.id.onOffTextview)
+        offButton = findViewById(R.id.offButton)
         mContext = this
 
-        setSwitch()
-
-        notificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                notificationSwitch.text = "On"
-            else {
-                notificationSwitch.text = "Off"
-                cancelNotification()
-            }
+        offButton.setOnClickListener {
+            cancelNotification()
+            notificationText.text = "Off"
         }
     }
 
     override fun onResume() {
         super.onResume()
-        setSwitch()
-        notificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                notificationSwitch.text = "On"
-            else {
-                notificationSwitch.text = "Off"
-                cancelNotification()
-            }
-        }
+        if (hasAlarm())
+            setOn()
     }
 
-    override fun onStart() {
-        super.onStart()
-        setSwitch()
-        notificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                notificationSwitch.text = "On"
-            else {
-                notificationSwitch.text = "Off"
-                cancelNotification()
-            }
-        }
-    }
-
-    private fun setSwitch() {
-        if (hasAlarm()) {
-            notificationSwitch.isChecked = true
-            notificationSwitch.text = "On"
-        }
-        else {
-            notificationSwitch.isChecked = false
-            notificationSwitch.text = "Off"
-        }
-    }
-
-    fun setSwitch(b: Boolean) {
-        notificationSwitch.isChecked = b
+    fun setOn() {
+        notificationText.text = "On"
     }
 
     fun showTimePickerDialog(v: View) {

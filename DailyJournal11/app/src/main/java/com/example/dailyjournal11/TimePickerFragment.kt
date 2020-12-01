@@ -30,7 +30,7 @@ class TimePickerFragment(c: Context) : DialogFragment(), OnTimeSetListener {
         // Do something with the time chosen by the user
         createNotificationChannel()
         sendNotification(hourOfDay, minute)
-        mContext.setSwitch(true)
+        mContext.setOn()
     }
 
     private fun sendNotification(hour: Int, minute: Int) {

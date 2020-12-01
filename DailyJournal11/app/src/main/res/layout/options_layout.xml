@@ -12,30 +12,39 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Daily Reminder Notification:"
-        app:layout_constraintEnd_toStartOf="@+id/notification_switch"
+        app:layout_constraintEnd_toStartOf="@+id/onOffTextview"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/notification_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textOff="Off"
-        android:textOn="On"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintStart_toEndOf="@+id/notification_title"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:onClick="showTimePickerDialog"
         android:text="Pick time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/notification_switch"
+        app:layout_constraintStart_toEndOf="@+id/offButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/onOffTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Off"
+        app:layout_constraintEnd_toStartOf="@+id/offButton"
+        app:layout_constraintStart_toEndOf="@+id/notification_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/offButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Cancel"
+        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/onOffTextview"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
