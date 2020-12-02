@@ -16,6 +16,7 @@ import android.widget.*
 import androidx.core.view.marginBottom
 import java.io.File
 import java.io.IOException
+import kotlin.random.Random
 
 
 class JournalDesign : Activity(), OnAudioFocusChangeListener {
@@ -61,6 +62,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mSubmitButton = findViewById(R.id.submitButton)
         mBackButton = findViewById(R.id.BackButton)
         mEditText = findViewById(R.id.body_text)
+
 
 
 //      audio section start in oncreate()
@@ -114,7 +116,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE)
         }
-//        audio section end in oncreate()
+
 
         mSubmitButton.setOnClickListener {
             Toast.makeText(applicationContext, "submit Button clicked", Toast.LENGTH_SHORT).show() //TODO remove
@@ -202,6 +204,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                         Toast.LENGTH_LONG
                     ).show()
                     mPlay.isChecked = false
+                    continueApp()
                 }
 
             } catch (e: IOException) {
