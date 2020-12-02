@@ -11,11 +11,13 @@ import android.media.AudioManager.OnAudioFocusChangeListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
 import android.util.Log
 import android.widget.*
 import androidx.core.view.marginBottom
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.io.File
 import java.io.IOException
@@ -57,7 +59,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
     private lateinit var mScrollView: LinearLayout
 
-    private lateinit var mDate: LocalDateTime
+    private lateinit var mDate: String
+    private lateinit var mId: String
 
 
 
@@ -65,16 +68,14 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.design_layout)
 
-        mDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) //TODO was short
-        val formatedDate = mDate.format(formatter)
+        val databaseJournals = FirebaseDatabase.getInstance().getReference("journals")
 
         mPictureButton = findViewById(R.id.picture_button)
         mSubmitButton = findViewById(R.id.submitButton)
         mBackButton = findViewById(R.id.BackButton)
         mEditText = findViewById(R.id.body_text)
 
-
+        val givenIntent = intent
 
 //      audio section start in oncreate()
         mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp" //TODO this needs to have filename associated with date
@@ -129,25 +130,33 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         }
 
 
+        if(givenIntent.extras!!.getBoolean("ISNEWJOURNAL") == false){
+            val text = givenIntent.getStringExtra("TEXT").toString()
+            mEditText.setText(text)
+            mDate = givenIntent.getStringExtra("DATE")!!
+            mId = givenIntent.getStringExtra("ID")!!
+        } else {
+            mId = databaseJournals.push().key!!
+            mDate = givenIntent.getStringExtra("DATE")!!
+        }
+
         mSubmitButton.setOnClickListener {
             Toast.makeText(applicationContext, "submit Button clicked", Toast.LENGTH_SHORT).show() //TODO remove
 
-            //TODO - add data to the database based JournalData data class and push it to the database
-            val journalText = mEditText.text.toString()
-            val date = formatedDate
-            //TODO - need a way to check for new or existing journal via intent with a boolean
-            //for example if the user hit new journal intent gives true, if existing journal intent gives false
-            //create new journalId based on this
+            //above if statement tells what was clicked: new journal or from journal list
+
+            var jdata = JournalData(mId!!, mDate, mEditText.text.toString())
+
+            databaseJournals.child(mId!!).setValue(jdata)
+            //TODO will change to databaseJournals.chile(username).child(id!!).setValue(jdata) when login stuff is done
 
             //TODO return with value
-            val intent = Intent().putExtra("date", date)
-            intent.putExtra("body", journalText)
-            setResult(436, intent)
+            setResult(436)
             finish()
         }
 
         mBackButton.setOnClickListener {
-            setResult(-1, Intent()) //appease Kotlin runtime null check
+            setResult(-1) //appease Kotlin runtime null check
             finish()
         }
     }
