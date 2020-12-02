@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 private lateinit var mNewJournalButton: Button
 private lateinit var mListView: ListView
@@ -21,10 +23,20 @@ private lateinit var journalList: ArrayList<String>
 private lateinit var mAdapter: HistoryListAdapter
 private lateinit var mSortButton: Button
 
+internal lateinit var journals: MutableList<JournalData>
+private lateinit var databaseJournals: DatabaseReference
+private lateinit var uid: String
+
 class Journals : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
+
+        //TODO- for creating list of journals from the database
+//        databaseJournals = FirebaseDatabase.getInstance().getReference("authors")
+//        journals = ArrayList()
+//        uid = intent.getStringExtra(USER_ID)!!
+
 
         journalList = arrayListOf<String>()
         mNewJournalButton = findViewById(R.id.newJournalButton)
@@ -98,9 +110,41 @@ class Journals : AppCompatActivity() {
     }
 
 
+    //TODO - for the database list we need to use something like this
+    // for creating list
+//    override fun onStart() {
+//        super.onStart()
+//
+//        databaseAuthors.addValueEventListener(object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                authors.clear()
+//
+//                var author: Author? = null
+//                for (postSnapshot in dataSnapshot.child(uid).children) {
+//                    try {
+//                        author = postSnapshot.getValue(Author::class.java)
+//                    } catch (e: Exception) {
+//                        Log.e(TAG, e.toString())
+//                    } finally {
+//                        authors.add(author!!)
+//                    }
+//                }
+//
+//                val authorAdapter = AuthorList(this@DashboardActivity, authors)
+//                listViewAuthors.adapter = authorAdapter
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//
+//            }
+//        })
+//    }
+
 
     companion object {
         var TAG = "Journals"
         val GET_BODY_REQUEST_CODE = 123
     }
+
+
 }

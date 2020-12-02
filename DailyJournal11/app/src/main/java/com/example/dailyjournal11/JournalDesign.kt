@@ -14,9 +14,16 @@ import android.os.Looper
 import android.util.Log
 import android.widget.*
 import androidx.core.view.marginBottom
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.io.File
 import java.io.IOException
-import kotlin.random.Random
+import java.lang.Exception
+import java.util.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 
 class JournalDesign : Activity(), OnAudioFocusChangeListener {
@@ -37,7 +44,6 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private var mPlayer: MediaPlayer? = null
     private lateinit var mAudioManager: AudioManager
 
-    //TODO - can remove write_external_storage once database has been implemented
     private val mPermissions =
         arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
@@ -51,12 +57,17 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
     private lateinit var mScrollView: LinearLayout
 
+    private lateinit var mDate: LocalDateTime
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.design_layout)
 
+        mDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        val formatedDate = mDate.format(formatter)
 
         mPictureButton = findViewById(R.id.picture_button)
         mSubmitButton = findViewById(R.id.submitButton)
@@ -66,7 +77,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
 
 //      audio section start in oncreate()
-        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp" //TODO this needs to be transfered to a database format instead of external files
+        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp" //TODO this needs to have filename associated with date
         mRecord = findViewById(R.id.record_audio_button)
         mPlay = findViewById(R.id.play_audio_button)
 
@@ -120,8 +131,16 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
         mSubmitButton.setOnClickListener {
             Toast.makeText(applicationContext, "submit Button clicked", Toast.LENGTH_SHORT).show() //TODO remove
+
+            //TODO - add data to the database based JournalData data class and push it to the database
+            val journalText = mEditText.text.toString()
+            val date = formatedDate
+            //TODO - need a way to check for new or existing journal via intent with a boolean
+            //for example if the user hit new journal intent gives true, if existing journal intent gives false
+            //create new journalId based on this
+
             //TODO return with value
-            val intent = Intent().putExtra("body", mEditText.text.toString())
+            val intent = Intent().putExtra("body", date)
             setResult(436, intent)
             finish()
         }
@@ -345,4 +364,10 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             Toast.makeText(applicationContext, "get image cancelled", Toast.LENGTH_SHORT).show()
         }
     }
+
+
+
+
+
+
 }
