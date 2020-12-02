@@ -56,16 +56,25 @@ class Journals : AppCompatActivity() {
         list.adapter = mAdapter
         mAdapter.setHistory(journalList)
 
-        journalList.add("436")
+        //journalList.add("436")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.i(TAG, "onActivityResult")
         if(resultCode == 436) {
-            var body = data?.getStringExtra("body")
-            journalList!!.add(body!!)
+            var date = data?.getStringExtra("date")
+            var journalText = data?.getStringExtra("body")
+            journalList!!.add(date!!)
             mAdapter.notifyDataSetChanged()
+
+            val databaseAuthors = FirebaseDatabase.getInstance().getReference("journals")
+            val id = databaseAuthors.push().key
+
+
+            var jdata = JournalData(id!!, date, journalText!!)
+
+            databaseAuthors.child(id!!).setValue(jdata) //TODO will change to databaseAuthors.chile(username).child(id!!).setValue(jdata) when login stuff is done
         }
     }
 

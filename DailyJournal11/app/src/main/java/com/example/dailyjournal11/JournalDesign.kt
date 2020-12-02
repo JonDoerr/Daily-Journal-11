@@ -66,7 +66,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         setContentView(R.layout.design_layout)
 
         mDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) //TODO was short
         val formatedDate = mDate.format(formatter)
 
         mPictureButton = findViewById(R.id.picture_button)
@@ -140,7 +140,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             //create new journalId based on this
 
             //TODO return with value
-            val intent = Intent().putExtra("body", date)
+            val intent = Intent().putExtra("date", date)
+            intent.putExtra("body", journalText)
             setResult(436, intent)
             finish()
         }
