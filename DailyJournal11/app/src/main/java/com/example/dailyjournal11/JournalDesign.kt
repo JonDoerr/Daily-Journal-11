@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.*
 import android.media.AudioManager.OnAudioFocusChangeListener
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,6 +20,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
@@ -26,6 +29,7 @@ import java.util.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+
 
 
 class JournalDesign : Activity(), OnAudioFocusChangeListener {
@@ -63,17 +67,21 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private lateinit var mId: String
 
 
+    private lateinit var mStorage: StorageReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.design_layout)
 
         val databaseJournals = FirebaseDatabase.getInstance().getReference("journals")
+        mStorage = FirebaseStorage.getInstance().getReference()
 
         mPictureButton = findViewById(R.id.picture_button)
         mSubmitButton = findViewById(R.id.submitButton)
         mBackButton = findViewById(R.id.BackButton)
         mEditText = findViewById(R.id.body_text)
+
 
         val givenIntent = intent
 
@@ -135,7 +143,23 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             mEditText.setText(text)
             mDate = givenIntent.getStringExtra("DATE")!!
             mId = givenIntent.getStringExtra("ID")!!
+
+
+            //audio download from firebase storage
+            val file = File(mAudioFilename)
+            val downloadAudio = mStorage.child("tests/${mId}_${mDate}_audio.3gp")
+            //TODO-change tests to uid so we can have a file per user
+
+            downloadAudio.getFile(file).addOnSuccessListener {
+                //TODO-handle success of download
+            }.addOnFailureListener{
+                //TODO-handle failure operation
+            }
+
         } else {
+            val file = File(mAudioFilename)
+            file.delete()
+
             mId = databaseJournals.push().key!!
             mDate = givenIntent.getStringExtra("DATE")!!
         }
@@ -144,6 +168,22 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             Toast.makeText(applicationContext, "submit Button clicked", Toast.LENGTH_SHORT).show() //TODO remove
 
             //above if statement tells what was clicked: new journal or from journal list
+
+
+
+
+            //audio upload to firebase storage
+            val file = Uri.fromFile(File(mAudioFilename))
+            val audioReference = mStorage.child("tests/${mId}_${mDate}_audio.3gp")
+            //TODO-change tests to uid so we can have a file per user
+
+            val uploadAudio = audioReference.putFile(file)
+
+            uploadAudio.addOnFailureListener{
+                //TODO- handle failure of upload
+            }.addOnSuccessListener {
+                //TODO- handle success of upload
+            }
 
             var jdata = JournalData(mId!!, mDate, mEditText.text.toString())
 
