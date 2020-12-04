@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -114,6 +115,11 @@ class Journals : AppCompatActivity() {
         val id: Int = item.itemId
         if (id == R.id.options) {
             val intent = Intent(this@Journals, JournalOptions::class.java)
+            startActivity(intent)
+            return true
+        } else if (id == R.id.logout) {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this@Journals, MainActivity::class.java)
             startActivity(intent)
             return true
         }
