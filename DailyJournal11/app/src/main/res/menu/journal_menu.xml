@@ -7,4 +7,7 @@
         android:title="More Information"
         android:onClick="displayDialog">
     </item>
+    <item android:id="@+id/logout"
+        android:title="Logout">
+    </item>
 </menu>
