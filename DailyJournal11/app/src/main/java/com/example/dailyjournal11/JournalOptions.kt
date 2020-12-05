@@ -22,16 +22,20 @@ class JournalOptions : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.options_layout)
+
+        // Set notification text and buttons
         notificationText = findViewById<Switch>(R.id.onOffTextview)
         offButton = findViewById(R.id.offButton)
         mContext = this
 
+        // If user hits the off button, cancel their notification
         offButton.setOnClickListener {
             cancelNotification()
             notificationText.text = "Off"
         }
     }
 
+    // Make sure On/Off text is set properly
     override fun onResume() {
         super.onResume()
         if (hasAlarm())
@@ -42,10 +46,12 @@ class JournalOptions : AppCompatActivity() {
         notificationText.text = "On"
     }
 
+    // For selecting a time
     fun showTimePickerDialog(v: View) {
         TimePickerFragment(mContext).show(supportFragmentManager, "timePicker")
     }
 
+    // Cancel notification alarm
     private fun cancelNotification() {
         val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(mContext.applicationContext, AlarmReceiver::class.java)
@@ -59,6 +65,7 @@ class JournalOptions : AppCompatActivity() {
         alarmManager.cancel(alarmIntent)
     }
 
+    // Check to see if an alarm has been set
     private fun hasAlarm(): Boolean {
         val intent = Intent(mContext.applicationContext, AlarmReceiver::class.java)
         val alarmIntent = PendingIntent.getBroadcast(
