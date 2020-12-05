@@ -16,6 +16,7 @@ class TimePickerFragment(c: Context) : DialogFragment(), OnTimeSetListener {
 
     private val mContext = c as JournalOptions
 
+    // From Google's documentation
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current time as the default values for the picker
         val c: Calendar = Calendar.getInstance()
@@ -33,6 +34,7 @@ class TimePickerFragment(c: Context) : DialogFragment(), OnTimeSetListener {
         mContext.setOn()
     }
 
+    // Based off of Google's documentation
     private fun sendNotification(hour: Int, minute: Int) {
         val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(mContext.applicationContext, AlarmReceiver::class.java)
@@ -49,6 +51,7 @@ class TimePickerFragment(c: Context) : DialogFragment(), OnTimeSetListener {
             alarm.timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)
     }
 
+    // From notification lab
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Daily Reminder" // getString(R.string.channel_name)
