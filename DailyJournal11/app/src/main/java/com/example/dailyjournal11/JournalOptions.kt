@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Switch
@@ -48,6 +49,7 @@ class JournalOptions : AppCompatActivity() {
 
     // For selecting a time
     fun showTimePickerDialog(v: View) {
+        Log.i(TAG, "Entered time picker")
         TimePickerFragment(mContext).show(supportFragmentManager, "timePicker")
     }
 
@@ -63,6 +65,7 @@ class JournalOptions : AppCompatActivity() {
         )
 
         alarmManager.cancel(alarmIntent)
+        Log.i(TAG, "Canceled notification")
     }
 
     // Check to see if an alarm has been set
@@ -80,6 +83,7 @@ class JournalOptions : AppCompatActivity() {
 
     companion object {
         var CHANNEL_ID = "Daily Reminder"
+        const val TAG = "DailyJournalTAG"
     }
 
 }

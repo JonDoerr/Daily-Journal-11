@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userID: TextView
     private lateinit var userPass: TextView
     private lateinit var errorTextView: TextView
-    private lateinit var passTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +33,9 @@ class MainActivity : AppCompatActivity() {
         userID = findViewById(R.id.editTextTextUserId)
         userPass = findViewById(R.id.editTextTextPassword)
         errorTextView = findViewById(R.id.errorTextView)
-        passTextView = findViewById(R.id.editTextTextPassword)
 
         // Make it so hitting the enter key logs in
-        passTextView.setOnKeyListener { v, keyCode, event ->
+        userPass.setOnKeyListener { v, keyCode, event ->
             if ((event.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 login()
                 true
@@ -45,22 +43,18 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
+        // If user wants to register an account, open register activity
         var registerButtonView = findViewById<Button>(R.id.registerButton)
         registerButtonView.setOnClickListener {
-//            Toast.makeText(applicationContext, "clicked register", Toast.LENGTH_SHORT).show() //TODO remove this
             val intent = Intent(this@MainActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
 
+        // Attempt to log in if user hits login button
         var loginButtonView = findViewById<Button>(R.id.loginButton)
         loginButtonView.setOnClickListener {
-//            Toast.makeText(applicationContext, "clicked login", Toast.LENGTH_SHORT).show() //TODO remove this
             login()
         }
-    }
-
-    private fun login() {
-        signIn(userID.text.toString(), userPass.text.toString())
     }
 
     override fun onStart() {
@@ -70,17 +64,21 @@ class MainActivity : AppCompatActivity() {
         checkLogin(currentUser)
     }
 
+    // If user is already logged in, skip login page
     private fun checkLogin(user: FirebaseUser?) {
         if (user != null) {
-            Toast.makeText(applicationContext, "logged in", Toast.LENGTH_SHORT).show() //TODO remove this
             val intent = Intent(this@MainActivity, Journals::class.java)
             startActivity(intent)
-        } else {
-            Toast.makeText(applicationContext, "not logged in", Toast.LENGTH_SHORT).show() //TODO remove this
         }
     }
 
+    private fun login() {
+        // Function to easily call signIn()
+        signIn(userID.text.toString(), userPass.text.toString())
+    }
+
     private fun signIn(email: String, password: String) {
+        // Check that boxes were filled
         if (email != "" && password != "") {
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(
@@ -93,48 +91,19 @@ class MainActivity : AppCompatActivity() {
                         checkLogin(user)
                     } else {
                         val localizedMessage = task.exception!!.localizedMessage
-//                        val error = task.exception!! as FirebaseAuthException
-//                        val errorCode = error.errorCode
 
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.exception)
                         errorTextView.text = "Error: $localizedMessage"
-
-                        checkLogin(null)
                     }
-
-                    // ...
                 }
         } else {
+            // If user forgets to enter username/password
             Toast.makeText(
                 this@MainActivity,
                 "Please enter a username and password", Toast.LENGTH_LONG
             ).show()
         }
-    }
-
-    private fun createAccount(email: String, password: String) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(
-                this
-            ) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
-                    val user = mAuth.currentUser
-                    checkLogin(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        this@MainActivity, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    checkLogin(null)
-                }
-
-                // ...
-            }
     }
 
 
