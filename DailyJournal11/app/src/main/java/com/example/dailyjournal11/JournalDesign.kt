@@ -15,6 +15,7 @@ import android.os.Looper
 import android.text.Editable
 import android.util.Log
 import android.widget.*
+import androidx.core.net.toUri
 import androidx.core.view.marginBottom
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,11 +26,12 @@ import com.google.firebase.storage.StorageReference
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
+import java.net.URI
 import java.util.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
+import kotlin.collections.ArrayList
 
 
 class JournalDesign : Activity(), OnAudioFocusChangeListener {
@@ -62,6 +64,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private var mResumeOnFocusGain: Boolean = false
 
     private lateinit var mScrollView: LinearLayout
+    private lateinit var mImageUris: ArrayList<Uri>
 
     private lateinit var mDate: String
     private lateinit var mId: String
@@ -127,7 +130,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         //Init image resources
 
         mScrollView = findViewById(R.id.LinearScrollView)
-
+        mImageUris = ArrayList<Uri>()
 
         mPictureButton.setOnClickListener {
             Toast.makeText(applicationContext, "picture Button clicked", Toast.LENGTH_SHORT).show() //TODO remove this
@@ -154,6 +157,37 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                 //TODO-handle success of download
             }.addOnFailureListener{
                 //TODO-handle failure operation
+            }
+
+            //image download from firebase storage
+            var done = 0
+            for(i in 0..10) { //download ten images
+                if(done == 1) {
+                    break
+                }
+                val imageReference = mStorage.child("tests/${mId}_${mDate}_/document/$i.jpg")
+                val imageFilename =
+                    application.getExternalFilesDir(null)?.absolutePath + "/image$i.jpg" //TODO this needs to have filename associated with date
+
+                val localFile = File(imageFilename)
+                imageReference.getFile(localFile).addOnSuccessListener {
+                    //TODO-handle success of download
+                    Toast.makeText(applicationContext, "Download successful $i", Toast.LENGTH_SHORT).show() //TODO remove
+                    var imageToAdd = ImageView(applicationContext)
+                    imageToAdd.setImageURI(Uri.fromFile(localFile))
+                    imageToAdd.maxWidth = 400
+                    imageToAdd.maxHeight = 400
+                    imageToAdd.adjustViewBounds = true
+                    imageToAdd.setPadding(10, 0, 10, 0)
+                    //ximageToAdd.layout
+                    //mScrollView.dividerPadding = 0
+                    var oof = mScrollView.layoutParams
+                    mScrollView.addView(imageToAdd)
+                }.addOnFailureListener {
+                    //TODO-handle failure operation
+                    Toast.makeText(applicationContext, "Download failed $i", Toast.LENGTH_SHORT).show() //TODO remove
+                    done = 1
+                }
             }
 
         } else {
@@ -189,6 +223,23 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
             databaseJournals.child(mId!!).setValue(jdata)
             //TODO will change to databaseJournals.chile(username).child(id!!).setValue(jdata) when login stuff is done
+
+
+            //image upload
+            var i = 0
+            for (uri in mImageUris) {
+                val file = File(uri.path)
+                val imageReference = mStorage.child("tests/${mId}_${mDate}_/document/${i}.jpg")
+                //TODO-change tests to uid so we can have a file per user
+                val uploadImages = imageReference.putFile(uri)
+
+                uploadImages.addOnFailureListener{
+                    //TODO- handle failure of upload
+                }.addOnSuccessListener {
+                    //TODO- handle success of upload
+                }
+                ++i
+            }
 
             //TODO return with value
             setResult(436)
@@ -398,6 +449,9 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
         if (requestCode == SELECT_IMAGE && resultCode != 0) {
             val inputStream = applicationContext.contentResolver.openInputStream(data!!.data!!)
+
+            //put the Uris in the list to be access on submit
+            mImageUris.add(data!!.data!!)
 
             var imageToAdd = ImageView(applicationContext)
             imageToAdd.setImageURI(data!!.data!!)
