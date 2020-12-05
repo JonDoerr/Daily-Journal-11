@@ -19,6 +19,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var userName: TextView
     private lateinit var userID: TextView
     private lateinit var userPass: TextView
+    private lateinit var userPassConfirmation: TextView
     private lateinit var errorTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,7 @@ class RegisterActivity : AppCompatActivity() {
         userName = findViewById(R.id.editTextTextName)
         userID = findViewById(R.id.editTextTextUserId)
         userPass = findViewById(R.id.editTextTextPassword)
+        userPassConfirmation = findViewById(R.id.editTextTextPasswordConfirmation)
         errorTextView = findViewById(R.id.errorTextView)
 
         // Make it so hitting the enter key hits register button
@@ -67,7 +69,18 @@ class RegisterActivity : AppCompatActivity() {
 
     // Function to easily call createAccount()
     private fun register() {
-        createAccount(userName.text.toString(), userID.text.toString(), userPass.text.toString())
+        if (userPass.text.toString() != userPassConfirmation.text.toString()) {
+            Toast.makeText(
+                this@RegisterActivity,
+                "Passwords don't match", Toast.LENGTH_LONG
+            ).show()
+        } else {
+            createAccount(
+                userName.text.toString(),
+                userID.text.toString(),
+                userPass.text.toString()
+            )
+        }
     }
 
     private fun createAccount(name: String, email: String, password: String) {
@@ -113,8 +126,6 @@ class RegisterActivity : AppCompatActivity() {
                     FirebaseAuth.getInstance().signOut()
                     errorTextView.setTextColor(Color.BLACK)
                     errorTextView.text = "Email verification sent! Check your email to verify account"
-//                    startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
-//                    finish()
                 } else {
                     Log.w(TAG, "email verification: failure", task.exception)
                     Toast.makeText(
