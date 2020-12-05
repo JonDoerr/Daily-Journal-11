@@ -39,9 +39,9 @@ class Journals : AppCompatActivity() {
         setContentView(R.layout.main_layout)
 
         //TODO- for creating list of journals from the database
-        databaseJournals = FirebaseDatabase.getInstance().getReference("journals")
         journals = ArrayList()
-//        uid = intent.getStringExtra(USER_ID)!!
+        uid = intent.getStringExtra("username")!!
+        databaseJournals = FirebaseDatabase.getInstance().getReference("journals/$uid")
 
 
         journalListView = findViewById(R.id.journals)
@@ -64,7 +64,7 @@ class Journals : AppCompatActivity() {
 
             val journal = journals[i]
 
-            val existingJournalIntent = Intent(applicationContext, JournalDesign::class.java)
+            val existingJournalIntent = Intent(applicationContext, JournalDesign::class.java).putExtra("username", uid)
 
             existingJournalIntent.putExtra("DATE", journal.journalDate)
             existingJournalIntent.putExtra("ID", journal.journalId)
@@ -92,12 +92,12 @@ class Journals : AppCompatActivity() {
     private fun newJournal() {
         //journalList.add("asdf")
         //mAdapter.notifyDataSetChanged()
-
+        mDate = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) //TODO was short
         val formatedDate = mDate.format(formatter)
 
         //TODO make a call to the activity that lets the user create a journal
-        val intent = Intent(this@Journals, JournalDesign::class.java)
+        val intent = Intent(this@Journals, JournalDesign::class.java).putExtra("username", uid)
 
         intent.putExtra("DATE", formatedDate)
         intent.putExtra("ISNEWJOURNAL", true)

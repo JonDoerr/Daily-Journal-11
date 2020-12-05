@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             if (user.isEmailVerified) {
                 Log.d(TAG, "email verified and user signed in")
-                val intent = Intent(this@MainActivity, Journals::class.java)
+                val intent = Intent(this@MainActivity, Journals::class.java).putExtra("username", user!!.email!!.replace(".", "%",true))
                 startActivity(intent)
             } else {
                 Log.d(TAG, "email not verified")

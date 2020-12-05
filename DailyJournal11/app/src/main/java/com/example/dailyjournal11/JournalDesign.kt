@@ -68,6 +68,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
     private lateinit var mDate: String
     private lateinit var mId: String
+    private lateinit var uid: String
 
 
     private lateinit var mStorage: StorageReference
@@ -77,7 +78,9 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.design_layout)
 
-        val databaseJournals = FirebaseDatabase.getInstance().getReference("journals")
+        uid = intent.getStringExtra("username")!!
+
+        val databaseJournals = FirebaseDatabase.getInstance().getReference("journals/$uid")
         mStorage = FirebaseStorage.getInstance().getReference()
 
         mPictureButton = findViewById(R.id.picture_button)
@@ -150,7 +153,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
             //audio download from firebase storage
             val file = File(mAudioFilename)
-            val downloadAudio = mStorage.child("tests/${mId}_${mDate}_audio.3gp")
+            val downloadAudio = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
             //TODO-change tests to uid so we can have a file per user
 
             downloadAudio.getFile(file).addOnSuccessListener {
@@ -165,7 +168,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                 if(done == 1) {
                     break
                 }
-                val imageReference = mStorage.child("tests/${mId}_${mDate}_/document/$i.jpg")
+                val imageReference = mStorage.child("$uid/${mId}_${mDate}_/document/$i.jpg")
                 val imageFilename =
                     application.getExternalFilesDir(null)?.absolutePath + "/image$i.jpg" //TODO this needs to have filename associated with date
 
@@ -208,7 +211,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
             //audio upload to firebase storage
             val file = Uri.fromFile(File(mAudioFilename))
-            val audioReference = mStorage.child("tests/${mId}_${mDate}_audio.3gp")
+            val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
             //TODO-change tests to uid so we can have a file per user
 
             val uploadAudio = audioReference.putFile(file)
@@ -229,7 +232,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             var i = 0
             for (uri in mImageUris) {
                 val file = File(uri.path)
-                val imageReference = mStorage.child("tests/${mId}_${mDate}_/document/${i}.jpg")
+                val imageReference = mStorage.child("$uid/${mId}_${mDate}_/document/${i}.jpg")
                 //TODO-change tests to uid so we can have a file per user
                 val uploadImages = imageReference.putFile(uri)
 
