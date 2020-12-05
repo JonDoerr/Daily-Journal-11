@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userID: TextView
     private lateinit var userPass: TextView
     private lateinit var errorTextView: TextView
+    private lateinit var resetPassword: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         userID = findViewById(R.id.editTextTextUserId)
         userPass = findViewById(R.id.editTextTextPassword)
         errorTextView = findViewById(R.id.errorTextView)
+        resetPassword = findViewById(R.id.resetPasswordButton)
 
         // Make it so hitting the enter key logs in
         userPass.setOnKeyListener { v, keyCode, event ->
@@ -55,6 +57,11 @@ class MainActivity : AppCompatActivity() {
         loginButtonView.setOnClickListener {
             login()
         }
+
+        resetPassword.setOnClickListener {
+            val intent = Intent(this@MainActivity, PasswordResetActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onStart() {
@@ -67,8 +74,19 @@ class MainActivity : AppCompatActivity() {
     // If user is already logged in, skip login page
     private fun checkLogin(user: FirebaseUser?) {
         if (user != null) {
-            val intent = Intent(this@MainActivity, Journals::class.java)
-            startActivity(intent)
+            if (user.isEmailVerified) {
+                Log.d(TAG, "email verified and user signed in")
+                val intent = Intent(this@MainActivity, Journals::class.java)
+                startActivity(intent)
+            } else {
+                Log.d(TAG, "email not verified")
+                Toast.makeText(
+                    this@MainActivity,
+                    "Email not verified, resending email", Toast.LENGTH_LONG
+                ).show()
+                user.reload()
+                user.sendEmailVerification()
+            }
         }
     }
 

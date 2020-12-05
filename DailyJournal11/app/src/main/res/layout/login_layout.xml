@@ -17,6 +17,16 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
     <TextView
+        android:id="@+id/textView4"
+        android:layout_width="194dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="165dp"
+        android:text="Forgot Password?"
+        android:textAlignment="textEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
         android:id="@+id/errorTextView"
         android:layout_width="318dp"
         android:layout_height="40dp"
@@ -48,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:ems="10"
-        android:hint="UserId"
+        android:hint="Email"
         android:inputType="textNoSuggestions|textWebEmailAddress|textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +89,19 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+
+    <Button
+        android:id="@+id/resetPasswordButton"
+        android:layout_width="60dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="110dp"
+        android:background="#00FFFFFF"
+        android:text="Reset"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
         android:id="@+id/loginButton"

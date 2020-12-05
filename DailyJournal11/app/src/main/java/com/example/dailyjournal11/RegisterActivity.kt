@@ -1,7 +1,9 @@
 package com.example.dailyjournal11
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.KeyEvent
 import android.widget.Button
@@ -85,7 +87,7 @@ class RegisterActivity : AppCompatActivity() {
                         mAuth.currentUser?.updateProfile(changeRequest)
 
                         val user = mAuth.currentUser
-                        checkLogin(user)
+                        sendVerification(user)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -101,6 +103,27 @@ class RegisterActivity : AppCompatActivity() {
                 "Please enter a name, username, and password", Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun sendVerification(user: FirebaseUser?) {
+        user!!.sendEmailVerification()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.w(TAG, "email verification: success", task.exception)
+                    FirebaseAuth.getInstance().signOut()
+                    errorTextView.setTextColor(Color.BLACK)
+                    errorTextView.text = "Email verification sent! Check your email to verify account"
+//                    startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+//                    finish()
+                } else {
+                    Log.w(TAG, "email verification: failure", task.exception)
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Error sending verification email", Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
     }
 
 
