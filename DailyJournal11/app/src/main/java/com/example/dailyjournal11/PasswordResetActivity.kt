@@ -1,10 +1,8 @@
 package com.example.dailyjournal11
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -51,7 +49,7 @@ class PasswordResetActivity : AppCompatActivity() {
                     errorTextView.text = "Reset email sent!"
                 } else {
                     // If password reset fails, display a message to the user.
-                    Log.w(RegisterActivity.TAG, "createUserWithEmail:failure", task.exception)
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     val localizedMessage = task.exception!!.localizedMessage
                     errorTextView.text = "Error: $localizedMessage"
                 }

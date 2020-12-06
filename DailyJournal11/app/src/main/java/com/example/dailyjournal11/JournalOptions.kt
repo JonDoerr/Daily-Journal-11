@@ -36,6 +36,7 @@ class JournalOptions : AppCompatActivity() {
         deleteAccountButton = findViewById(R.id.delete_account_button)
         mContext = this
 
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance()
 
         // If user hits the off button, cancel their notification
@@ -80,6 +81,9 @@ class JournalOptions : AppCompatActivity() {
 
     // Cancel notification alarm
     private fun cancelNotification() {
+
+        // In order to cancel a scheduled notification, we need to
+        // recreate the same alarmIntent and pass it to the alarmManager.cancel() function
         val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(mContext.applicationContext, AlarmReceiver::class.java)
         val alarmIntent = PendingIntent.getBroadcast(
@@ -107,12 +111,15 @@ class JournalOptions : AppCompatActivity() {
     }
 
     private fun deleteAccount() {
+        // Variable for current user
         var user = mAuth.currentUser
 
+        // Call the delete() method to remove the user from the Firebase databse
         user!!.delete()
             .addOnCompleteListener(this) {
                 task ->
             if (task.isSuccessful) {
+                // Display output when successful and return to login screen
                 Log.w(RegisterActivity.TAG, "delete user success", task.exception)
                 Toast.makeText(
                     this@JournalOptions,
