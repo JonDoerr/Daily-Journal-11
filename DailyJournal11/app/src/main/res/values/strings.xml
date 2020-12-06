@@ -8,8 +8,11 @@
     <string name="record_audio_stop">Stop Recording</string>
     <string name="play_audio_start">Start Playback</string>
     <string name="play_audio_stop">Stop Playback</string>
+    <string name="delete_audio_start">Delete Audio</string>
+    <string name="delete_audio_stop">Delete Audio</string>
     <string name="add_pictures">Add Pictures</string>
     <string name="Submit">Submit</string>
     <string name="Back">Back</string>
+    <string name="delete_journal">Delete</string>
 
 </resources>
