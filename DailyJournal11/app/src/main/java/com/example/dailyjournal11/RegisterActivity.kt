@@ -3,7 +3,6 @@ package com.example.dailyjournal11
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.view.KeyEvent
 import android.widget.Button
@@ -110,10 +109,10 @@ class RegisterActivity : AppCompatActivity() {
 
                 }
         } else {
-            // If user forgets to enter name/username/password
+            // If user forgets to enter name/email/password
             Toast.makeText(
                 this@RegisterActivity,
-                "Please enter a name, username, and password", Toast.LENGTH_LONG
+                "Please enter a name, email, and password", Toast.LENGTH_LONG
             ).show()
         }
     }
