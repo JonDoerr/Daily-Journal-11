@@ -51,7 +51,16 @@ class Journals : AppCompatActivity() {
 
         mSortButton = findViewById(R.id.SortButton)
         mSortButton.setOnClickListener {
-            Toast.makeText(applicationContext, "sort Button clicked", Toast.LENGTH_SHORT).show() //TODO remove this
+            Log.i(TAG, "sort Button clicked")
+
+            if(mSortButton.text == "ascending") {
+                mSortButton.text = "descending"
+            }
+            else {
+                mSortButton.text = "ascending"
+            }
+            journals = journals.reversed().toMutableList()
+            journalListView.adapter = HistoryListAdapter(this@Journals, journals)
         }
 
         mDate = LocalDateTime.now()
@@ -149,7 +158,9 @@ class Journals : AppCompatActivity() {
                         journals.add(journal!!)
                     }
                 }
-
+                if(mSortButton.text == "descending") {
+                    journals = journals.reversed().toMutableList()
+                }
                 val journalAdapter = HistoryListAdapter(this@Journals, journals)
                 journalListView.adapter = journalAdapter
             }

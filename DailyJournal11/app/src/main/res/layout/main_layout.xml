@@ -38,13 +38,13 @@
 
     <Button
         android:id="@+id/SortButton"
-        android:layout_width="45dp"
-        android:layout_height="22dp"
+        android:layout_width="62dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="12dp"
         android:background="@android:color/transparent"
-        android:text="TODO"
-        android:textSize="14sp"
+        android:text="ascending"
+        android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/journals"
         app:layout_constraintStart_toEndOf="@+id/textView3" />
 
