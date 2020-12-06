@@ -38,18 +38,14 @@ class Journals : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
 
-        //TODO- for creating list of journals from the database
         journals = ArrayList()
         uid = intent.getStringExtra("username")!!
         databaseJournals = FirebaseDatabase.getInstance().getReference("journals/$uid")
-
-
         journalListView = findViewById(R.id.journals)
-
         mNewJournalButton = findViewById(R.id.newJournalButton)
 
         mNewJournalButton.setOnClickListener {
-            Toast.makeText(applicationContext, "newJournal Button clicked", Toast.LENGTH_SHORT).show() //TODO remove this
+            Log.i(TAG, "newJournal Button clicked")
             newJournal()
         }
 
@@ -75,28 +71,23 @@ class Journals : AppCompatActivity() {
             startActivityForResult(existingJournalIntent, GET_BODY_REQUEST_CODE)
 
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.i(TAG, "onActivityResult")
         if(resultCode == 436) {
-            //TODO- dont know if we need this but keep it for now cuz it looks to work fine
-            Toast.makeText(applicationContext, "Journal submitted sucessfully", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "Journal submitted sucessfully")
         }
     }
 
     //Go to the journal activity
-    //TODO entry's don't persist (they will either need to be put in storage or on firebase)
     private fun newJournal() {
-        //journalList.add("asdf")
-        //mAdapter.notifyDataSetChanged()
         mDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) //TODO was short
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
         val formatedDate = mDate.format(formatter)
 
-        //TODO make a call to the activity that lets the user create a journal
+        //make a call to the activity that lets the user create a journal
         val intent = Intent(this@Journals, JournalDesign::class.java).putExtra("username", uid)
 
         intent.putExtra("DATE", formatedDate)
@@ -140,7 +131,6 @@ class Journals : AppCompatActivity() {
         frag.show(supportFragmentManager, "tag")
     }
 
-
     //displays the database list
     override fun onStart() {
         super.onStart()
@@ -150,7 +140,6 @@ class Journals : AppCompatActivity() {
                 journals.clear()
 
                 var journal: JournalData? = null
-                //postSnapshot in dataSnapshot.child(uid).children
                 for (postSnapshot in dataSnapshot.children) {
                     try {
                         journal = postSnapshot.getValue(JournalData::class.java)
@@ -166,16 +155,13 @@ class Journals : AppCompatActivity() {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-
+                Log.i(TAG, "cancelled")
             }
         })
     }
-
 
     companion object {
         var TAG = "Journals"
         val GET_BODY_REQUEST_CODE = 123
     }
-
-
 }
