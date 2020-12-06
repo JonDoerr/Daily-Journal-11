@@ -17,24 +17,8 @@ import android.widget.TextView
 class HistoryListAdapter (private val context: Activity, private var journals: List<JournalData>) : ArrayAdapter<JournalData>(context, R.layout.history_list, journals)
 {
 
-    //TODO- remove this at end. hold onto for now if we do need any of it
-//    private var history : MutableList<JournalData> = ArrayList()
-//    override fun getCount(): Int {
-//        return history.size
-//    }
-//
-//    fun setHistory(newHistory: MutableList<JournalData>){
-//        history =  newHistory
-//    }
-//
-//    override fun getItemId(position: Int): Long {
-//        return  position.toLong()
-//    }
-//
-//    override fun getItem(position: Int): JournalData? {
-//        return history[position]
-//    }
-
+//gets the view of the history list adapter for displaying journals in the main layout
+    //this code is based off of the code given to use in lab7- firebase and modified to refelct what we need it to do in our project
     @SuppressLint("InflateParams", "ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater

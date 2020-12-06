@@ -91,8 +91,10 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
         val givenIntent = intent
 
-//      audio section start in oncreate()
-        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp" //TODO this needs to have filename associated with date
+        //the code written to record and playback audio in this project is taken from an example used in
+        //CMSC 436 lecture as it directly reflected what we needed in this project.
+        //the example used was: AudioVideoAudioRecording
+        mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp"
         mRecord = findViewById(R.id.record_audio_button)
         mPlay = findViewById(R.id.play_audio_button)
 
@@ -105,14 +107,14 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mRecord.setOnCheckedChangeListener {_, isChecked ->
             mPlay.isEnabled = !isChecked
 
-            Toast.makeText(applicationContext, "start/stop recording", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "start/stop recording")
             onRecordPressed(isChecked)
         }
 
         mPlay.setOnCheckedChangeListener {_, isChecked ->
             mRecord.isEnabled = !isChecked
 
-            Toast.makeText(applicationContext, "start/stop playing", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "start/stop playing")
             onPlayPressed(isChecked)
         }
 
@@ -136,14 +138,14 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mImageUris = ArrayList<Uri>()
 
         mPictureButton.setOnClickListener {
-            Toast.makeText(applicationContext, "picture Button clicked", Toast.LENGTH_SHORT).show() //TODO remove this
+            Log.i(TAG, "Picture button clicked")
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE)
         }
 
-
+        //check if the journal is existing already or if newJournal button was pressed
         if(givenIntent.extras!!.getBoolean("ISNEWJOURNAL") == false){
             val text = givenIntent.getStringExtra("TEXT").toString()
             mEditText.setText(text)
@@ -154,12 +156,13 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             //audio download from firebase storage
             val file = File(mAudioFilename)
             val downloadAudio = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
-            //TODO-change tests to uid so we can have a file per user
 
             downloadAudio.getFile(file).addOnSuccessListener {
-                //TODO-handle success of download
+                //handle success
+                Log.i(TAG, "audio download success")
             }.addOnFailureListener{
-                //TODO-handle failure operation
+                //handle failure
+                Log.i(TAG, "audio download failure")
             }
 
             //image download from firebase storage
@@ -170,12 +173,12 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                 }
                 val imageReference = mStorage.child("$uid/${mId}_${mDate}_/document/$i.jpg")
                 val imageFilename =
-                    application.getExternalFilesDir(null)?.absolutePath + "/image$i.jpg" //TODO this needs to have filename associated with date
+                    application.getExternalFilesDir(null)?.absolutePath + "/image$i.jpg"
 
                 val localFile = File(imageFilename)
                 imageReference.getFile(localFile).addOnSuccessListener {
-                    //TODO-handle success of download
-                    Toast.makeText(applicationContext, "Download successful $i", Toast.LENGTH_SHORT).show() //TODO remove
+                    //handle success of download
+                    Log.i(TAG, "Download successful $i")
                     var imageToAdd = ImageView(applicationContext)
                     imageToAdd.setImageURI(Uri.fromFile(localFile))
                     imageToAdd.maxWidth = 400
@@ -187,8 +190,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                     var oof = mScrollView.layoutParams
                     mScrollView.addView(imageToAdd)
                 }.addOnFailureListener {
-                    //TODO-handle failure operation
-                    Toast.makeText(applicationContext, "Download failed $i", Toast.LENGTH_SHORT).show() //TODO remove
+                    //handle failure operation
+                    Log.i(TAG, "Download failed $i")
                     done = 1
                 }
             }
@@ -202,49 +205,44 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         }
 
         mSubmitButton.setOnClickListener {
-            Toast.makeText(applicationContext, "submit Button clicked", Toast.LENGTH_SHORT).show() //TODO remove
-
-            //above if statement tells what was clicked: new journal or from journal list
-
-
-
+            Log.i(TAG, "submit button clicked")
 
             //audio upload to firebase storage
             val file = Uri.fromFile(File(mAudioFilename))
             val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
-            //TODO-change tests to uid so we can have a file per user
 
             val uploadAudio = audioReference.putFile(file)
 
             uploadAudio.addOnFailureListener{
-                //TODO- handle failure of upload
+                //handle failure of upload
+                Log.i(TAG, "Upload failure")
             }.addOnSuccessListener {
-                //TODO- handle success of upload
+                //handle success of upload
+                Log.i(TAG, "Upload successful")
             }
 
             var jdata = JournalData(mId!!, mDate, mEditText.text.toString())
 
             databaseJournals.child(mId!!).setValue(jdata)
-            //TODO will change to databaseJournals.chile(username).child(id!!).setValue(jdata) when login stuff is done
-
 
             //image upload
             var i = 0
             for (uri in mImageUris) {
                 val file = File(uri.path)
                 val imageReference = mStorage.child("$uid/${mId}_${mDate}_/document/${i}.jpg")
-                //TODO-change tests to uid so we can have a file per user
                 val uploadImages = imageReference.putFile(uri)
 
                 uploadImages.addOnFailureListener{
-                    //TODO- handle failure of upload
+                    //handle failure of upload
+                    Log.i(TAG, "upload failure")
                 }.addOnSuccessListener {
-                    //TODO- handle success of upload
+                    //handle success of upload
+                    Log.i(TAG, "Upload successful")
                 }
                 ++i
             }
 
-            //TODO return with value
+            //return with value
             setResult(436)
             finish()
         }
@@ -254,9 +252,6 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             finish()
         }
     }
-
-
-//    audio section methods start
 
     //record button pressed
     private fun onRecordPressed(shouldStartRecording: Boolean){
@@ -446,9 +441,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mPlay.isEnabled = true
         mRecord.isEnabled = true
     }
-//    audio section methods end
 
-    //Picture section
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
         if (requestCode == SELECT_IMAGE && resultCode != 0) {
             val inputStream = applicationContext.contentResolver.openInputStream(data!!.data!!)
@@ -468,7 +462,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             mScrollView.addView(imageToAdd)
         }
         else {
-            Toast.makeText(applicationContext, "get image cancelled", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "get image cancelled")
         }
     }
 
