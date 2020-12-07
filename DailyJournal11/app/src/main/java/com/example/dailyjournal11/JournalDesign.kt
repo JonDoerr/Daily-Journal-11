@@ -203,6 +203,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                     imageToAdd.setPadding(10, 0, 10, 0)
                     //ximageToAdd.layout
                     //mScrollView.dividerPadding = 0
+                    mImageUris.add(Uri.fromFile(localFile))
+
                     var oof = mScrollView.layoutParams
                     mScrollView.addView(imageToAdd)
                 }.addOnFailureListener {
