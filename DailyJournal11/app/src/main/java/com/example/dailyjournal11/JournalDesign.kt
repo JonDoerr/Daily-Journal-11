@@ -57,6 +57,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
     private lateinit var mPlay: ToggleButton
     private lateinit var mRecord: ToggleButton
+    private lateinit var mDeleteAudio: Button
     private lateinit var mPlaybackAttributes: AudioAttributes
     private lateinit var mFocusRequest: AudioFocusRequest
     private val mFocusLock = Any()
@@ -88,6 +89,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mBackButton = findViewById(R.id.BackButton)
         mEditText = findViewById(R.id.body_text)
 
+        var deleteAudioBoolean = false
 
         val givenIntent = intent
 
@@ -97,6 +99,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mAudioFilename = application.getExternalFilesDir(null)?.absolutePath + "/audioFile.3gp"
         mRecord = findViewById(R.id.record_audio_button)
         mPlay = findViewById(R.id.play_audio_button)
+        mDeleteAudio = findViewById(R.id.delete_audio_button)
 
         if (checkSelfPermission(mPermissions[0]) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(mPermissions[1]) != PackageManager.PERMISSION_GRANTED){
             requestPermissions(mPermissions, APP_PERMS_REQ)
@@ -116,6 +119,15 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
             Log.i(TAG, "start/stop playing")
             onPlayPressed(isChecked)
+        }
+
+        mDeleteAudio.setOnClickListener {
+
+            val file = File(mAudioFilename)
+            file.delete()
+
+            deleteAudioBoolean = true
+            mDeleteAudio.isEnabled = false
         }
 
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -160,9 +172,11 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             downloadAudio.getFile(file).addOnSuccessListener {
                 //handle success
                 Log.i(TAG, "audio download success")
+                mDeleteAudio.isEnabled = true
             }.addOnFailureListener{
                 //handle failure
                 Log.i(TAG, "audio download failure")
+                mDeleteAudio.isEnabled = false
             }
 
             //image download from firebase storage
@@ -200,6 +214,8 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             val file = File(mAudioFilename)
             file.delete()
 
+            mDeleteAudio.isEnabled = false
+
             mId = databaseJournals.push().key!!
             mDate = givenIntent.getStringExtra("DATE")!!
         }
@@ -207,19 +223,33 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mSubmitButton.setOnClickListener {
             Log.i(TAG, "submit button clicked")
 
-            //audio upload to firebase storage
-            val file = Uri.fromFile(File(mAudioFilename))
-            val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
 
-            val uploadAudio = audioReference.putFile(file)
+            if (deleteAudioBoolean == true){
+                //delete audio if audio button is pressed
+                val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
 
-            uploadAudio.addOnFailureListener{
-                //handle failure of upload
-                Log.i(TAG, "Upload failure")
-            }.addOnSuccessListener {
-                //handle success of upload
-                Log.i(TAG, "Upload successful")
+                audioReference.delete().addOnSuccessListener {
+                    //handle success
+                    Log.i(TAG, "audio deletion success")
+                }.addOnFailureListener{
+                    Log.i(TAG, "audio deletion failure")
+                }
+            } else {
+                //audio upload to firebase storage
+                val file = Uri.fromFile(File(mAudioFilename))
+                val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
+
+                val uploadAudio = audioReference.putFile(file)
+
+                uploadAudio.addOnFailureListener{
+                    //handle failure of upload
+                    Log.i(TAG, "Upload failure")
+                }.addOnSuccessListener {
+                    //handle success of upload
+                    Log.i(TAG, "Upload successful")
+                }
             }
+
 
             var jdata = JournalData(mId!!, mDate, mEditText.text.toString())
 
@@ -284,6 +314,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mRecorder?.apply {
             stop()
             release()
+            mDeleteAudio.isEnabled = true
             mRecorder = null
         }
     }
@@ -318,7 +349,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
                 } else {
                     Toast.makeText(
                         this@JournalDesign,
-                        "No recoring made",
+                        "No recoring.",
                         Toast.LENGTH_LONG
                     ).show()
                     mPlay.isChecked = false

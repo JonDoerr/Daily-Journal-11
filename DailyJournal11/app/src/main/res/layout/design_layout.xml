@@ -16,13 +16,12 @@
         app:layout_constraintBottom_toTopOf="@+id/body_text"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/delete_audio_button"
         android:layout_width="146dp"
         android:layout_height="47dp"
         android:layout_marginStart="20dp"
-        android:textOff="@string/delete_audio_start"
-        android:textOn="@string/delete_audio_stop"
+        android:text ="Delete Audio"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/play_audio_button" />
 
