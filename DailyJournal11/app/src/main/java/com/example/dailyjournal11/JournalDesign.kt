@@ -46,6 +46,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
     private lateinit var mSubmitButton: Button
     private lateinit var mBackButton: Button
     private lateinit var mEditText: EditText
+    private lateinit var mDeleteButton: Button
 
     private lateinit var mAudioFilename: String
     private var mRecorder: MediaRecorder? = null
@@ -88,6 +89,7 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
         mSubmitButton = findViewById(R.id.submitButton)
         mBackButton = findViewById(R.id.BackButton)
         mEditText = findViewById(R.id.body_text)
+        mDeleteButton = findViewById(R.id.delete_button)
 
         var deleteAudioBoolean = false
 
@@ -274,6 +276,31 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
 
             //return with value
             setResult(436)
+            finish()
+        }
+
+        mDeleteButton.setOnClickListener{
+            Log.i(TAG, "delete button clicked")
+
+            //remove and delete audio
+            val audioReference = mStorage.child("$uid/${mId}_${mDate}_audio.3gp")
+
+            audioReference.delete().addOnSuccessListener {
+                //handle success
+                Log.i(TAG, "audio deletion success")
+            }.addOnFailureListener{
+                Log.i(TAG, "audio deletion failure")
+            }
+
+            val file = File(mAudioFilename)
+            file.delete()
+
+            //remove and delete images
+
+
+            //remove and delete realtime data
+            databaseJournals.child(mId!!).removeValue()
+
             finish()
         }
 
