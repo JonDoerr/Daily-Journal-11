@@ -301,6 +301,21 @@ class JournalDesign : Activity(), OnAudioFocusChangeListener {
             //remove and delete realtime data
             databaseJournals.child(mId!!).removeValue()
 
+
+
+            for (i in 0..10) {
+                //val file = File(uri.path)
+                val imageReference = mStorage.child("$uid/${mId}_${mDate}_/document/${i}.jpg")
+
+                imageReference.delete().addOnFailureListener{
+                    //handle failure of upload
+                    Log.i(TAG, "delete image failure")
+                }.addOnSuccessListener {
+                    //handle success of upload
+                    Log.i(TAG, "delete image successful")
+                }
+            }
+
             finish()
         }
 
